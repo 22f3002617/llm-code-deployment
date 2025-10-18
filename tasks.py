@@ -87,7 +87,7 @@ def create_project_task(build_task: dict):
                     "task": task,
                     "round": round_index,
                     "nonce": nonce,
-                    "repo_url": repository.url,
+                    "repo_url": repository.html_url,
                     "commit_sha": commit_sha,
                     "pages_url": pages_url,
                 },
@@ -140,6 +140,7 @@ def update_project_task(build_task: dict):
                                   commit_message="Updated project task"
                                   )
             repository_url, pages_url = get_repository_details(repo_name=task)
+            logger.info(f"Sending callback to {evaluation_url} with repo_url: {repository_url}, pages_url: {pages_url}, commit_sha: {commit_sha}")
             send_callback_response(
                 evaluation_url,
                 {

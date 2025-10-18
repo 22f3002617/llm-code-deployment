@@ -153,13 +153,12 @@ async def generate_code(brief, attachments, checks) -> Tuple[str | None, str | N
     ]
     for attachment in attachments:
         mime_type, byte_data = parse_data_url(attachment["url"])
-
-        if mime_type.startswith("text/"):
+        if mime_type.startswith("text/") or mime_type.startswith("application/json"):
             content.append(ResponseInputTextParam(
-                text=f"```\n{byte_data.decode("utf-8")}```", type="input_text"
+                text=f"{attachment["name"]} file\n```({mime_type.split("/")[1]})\n{byte_data.decode("utf-8")}```", type="input_text"
             ))
         else:
-            file_obj = await openai_client.files.create(file=byte_data, purpose="assistants", extra_body={"model": "gpt-4o"})
+            file_obj = await openai_client.files.create(file=byte_data, purpose="assistants")
 
             content.append(ResponseInputFileParam(file_id=file_obj.id, type="input_file", filename=attachment["name"]))
         # content.append(
@@ -327,6 +326,8 @@ def commit_multiple_files(repo_name, files, commit_message, branch="main"):
 
     print(f"\nSuccessfully committed {len(files)} files to branch '{branch}'!")
 
+    return new_commit.sha
+
 
 def create_repository_repository(repository_name: str) -> Repository | None:
     logger.info(f"Creating repository: {repository_name}")
@@ -482,7 +483,7 @@ def get_pages_url(repository: Repository)->str:
 
 def get_repository_details(repo_name: str)->Tuple[str, str]:
     repository = github_client.get_user().get_repo(repo_name)
-    return repository.url, get_pages_url(repository)
+    return repository.html_url, get_pages_url(repository)
 
 # def verify_repository(repository_name: str):
 #     logger.info(f"Verifying repository: {repository_name}")
