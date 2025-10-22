@@ -2,19 +2,17 @@ import base64
 import logging
 import re
 import time
-from tempfile import TemporaryFile
-from typing import Optional, Tuple, LiteralString, Literal
+from typing import Tuple, Literal
 
 import requests
-from github import Auth, Github, GithubException, InputGitTreeElement
-from github.Commit import Commit
+from github import Auth, Github
 from github.Repository import Repository
 from kombu.exceptions import HttpError
 from openai import AsyncOpenAI
 from openai.types.responses import EasyInputMessageParam, ResponseInputMessageContentListParam, ResponseInputTextParam, \
     ResponseInputFileParam
 
-from config import config
+from ..core.config import config
 
 logger = logging.getLogger(__name__)
 
@@ -178,6 +176,7 @@ async def generate_code(brief, attachments, checks) -> Tuple[str | None, str | N
     generated_text = ""
     for item in response.output:
         for content in item.content:
+            # noinspection PyUnresolvedReferences
             generated_text += content.text.strip()
     logger.info(f"Generated code len: {len(generated_text)}")
 
@@ -255,14 +254,13 @@ github_client = Github(auth=auth)
 #
 #     return new_commit.sha
 
-from github import Github, InputGitTreeElement, GithubException
+from github import InputGitTreeElement, GithubException
 
 def commit_multiple_files(repo_name, files, commit_message, branch="main"):
     """
         Commit multiple files in a single commit using GitHub API.
         Works for both empty and existing repositories.
 
-        :param github_client: An authenticated PyGithub Github instance.
         :param repo_name: The name of the repository (e.g., "my-awesome-repo").
         :param files: A dictionary of { "path/to/file": "file content" }.
         :param commit_message: The message for the commit.
@@ -272,7 +270,7 @@ def commit_multiple_files(repo_name, files, commit_message, branch="main"):
         repo = github_client.get_user().get_repo(repo_name)
     except GithubException:
         print(f"Repository '{repo_name}' not found.")
-        return
+        return None
 
     base_commit = None
     base_tree = None

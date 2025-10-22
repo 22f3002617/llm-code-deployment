@@ -1,10 +1,19 @@
-# Sample Celery FastAPI Project
+---
+title: My Docker Space
+emoji: 🐳
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_file: Dockerfile
+pinned: false
+---
+# LLM Code Deployment Service
 
 ## Overview
-This project is a FastAPI web service integrated with Celery for distributed task processing. It is designed to automate code deployment and static site generation using LLMs, GitHub, and OpenAI APIs. The service exposes endpoints for queuing project creation and update tasks, which are processed asynchronously in the background.
+This project is designed to automate code deployment and static site generation using LLMs, GitHub, and OpenAI APIs. The service exposes endpoints for queuing project creation and update tasks, which are processed asynchronously in the background.
 
 ## Features
-- **FastAPI**: RESTful API for task submission and status.
+- **FastAPI**: REST full API for task submission and status.
 - **Celery**: Background task processing with in-memory broker (for demo/local use).
 - **GitHub Integration**: Create/update repositories, enable GitHub Pages, commit files.
 - **OpenAI Integration**: Generate code and documentation using LLMs.
@@ -14,19 +23,19 @@ This project is a FastAPI web service integrated with Celery for distributed tas
 ## Setup
 ### Prerequisites
 - Python 3.11+
-- [Poetry](https://python-poetry.org/) or pip
+- [uv](https://docs.astral.sh/uv/) or pip
 
 ### Installation
 1. Clone the repository:
    ```bash
    git clone <repo-url>
-   cd sample-celery
+   cd llm-code-deployment
    ```
 2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    # or
-   poetry install
+   uv sync
    ```
 
 ### Environment Variables
@@ -39,7 +48,17 @@ Configure your secrets and API keys in `config.py` or via environment variables:
 ### Running the Service
 Start the FastAPI app (Celery worker starts automatically in a background thread):
 ```bash
-python app.py
+uvicorn app.main:app
+```
+
+### Docker
+Build docker image
+```bash
+docker build -t "code-dev-agent"  . 
+```
+Run docker container
+```bash
+docker run -it --rm -p 7860:7860 --name code-dev-agent code-dev-agent
 ```
 
 ### API Endpoints
@@ -65,5 +84,4 @@ Queue a new project creation or update task.
 MIT License
 
 ---
-*Generated on October 18, 2025.*
 

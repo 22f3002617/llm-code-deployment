@@ -3,6 +3,7 @@ from celery import Celery
 celery_app = Celery('tasks', broker='memory://localhost//', backend="cache+memory://localhost",)
 celery_app.conf.worker_hijack_root_logger = False
 # Auto-discover tasks in app.tasks (explicit import can ensure registration)
+# noinspection PyBroadException
 try:
     from . import tasks
 except Exception:

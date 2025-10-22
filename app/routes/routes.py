@@ -4,9 +4,9 @@ from celery.result import AsyncResult
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from config import config
-from model import BuildTaskRequest
-from tasks import create_project_task, update_project_task
+from ..core.config import config
+from ..models.model import BuildTaskRequest
+from ..tasks.tasks import create_project_task, update_project_task
 
 router = APIRouter()
 
