@@ -1,7 +1,7 @@
 name: Check file size
 on:               # or directly `on: [push]` to run the action on every push on any branch
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   pull_request:
     branches: [main]
 
